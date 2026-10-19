@@ -18,7 +18,11 @@
     "test:server": "npm run test --workspace=server",
     "test:client": "npm run test --workspace=client",
     "build": "npm run build --workspace=client",
+    "start": "npm run start --workspace=server",
     "lint": "npm run lint --workspace=server && npm run lint --workspace=client"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
