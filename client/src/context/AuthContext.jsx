@@ -33,6 +33,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     if (res.success) {
+      if (res.token) {
+        localStorage.setItem('kaaryamithra_token', res.token);
+      }
       setUser(res.user);
       setWorkerProfile(res.workerProfile || null);
     }
@@ -42,6 +45,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (data) => {
     const res = await api.post('/auth/register', data);
     if (res.success) {
+      if (res.token) {
+        localStorage.setItem('kaaryamithra_token', res.token);
+      }
       setUser(res.user);
       setWorkerProfile(res.workerProfile || null);
     }
@@ -52,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post('/auth/logout', {});
     } finally {
+      localStorage.removeItem('kaaryamithra_token');
       setUser(null);
       setWorkerProfile(null);
     }

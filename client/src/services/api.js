@@ -1,4 +1,5 @@
-const BASE_URL = '/api';
+const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const BASE_URL = RAW_BASE_URL.replace(/\/+$/, '');
 
 export class ApiError extends Error {
   constructor(message, status, errors = []) {
@@ -9,13 +10,22 @@ export class ApiError extends Error {
 }
 
 async function request(endpoint, options = {}) {
-  const url = `${BASE_URL}${endpoint}`;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${BASE_URL}${cleanEndpoint}`;
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  const storedToken = typeof window !== 'undefined' ? localStorage.getItem('kaaryamithra_token') : null;
+  if (storedToken) {
+    headers['Authorization'] = `Bearer ${storedToken}`;
+  }
+
   const config = {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
     credentials: 'include', // Automatically passes and receives httpOnly auth cookies
   };
 
